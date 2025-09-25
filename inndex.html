@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .code-display {
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+    <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="p-6">
+            <div class="bg-gray-800 text-white p-6 rounded-lg mb-6 text-center code-display">
+                <div id="currentCode" class="text-3xl font-mono font-bold tracking-wider">LO-A1-02-03-A</div>
+                <div id="codeBreakdown" class="mt-4 text-left text-sm text-gray-300">
+                    <div class="mb-1"><span class="text-blue-300">LO</span> - Location</div>
+                    <div class="mb-1"><span class="text-blue-300">A1</span> - Aisle A, Position 1</div>
+                    <div class="mb-1"><span class="text-blue-300">02</span> - Rack 02</div>
+                    <div class="mb-1"><span class="text-blue-300">03</span> - Shelf 03</div>
+                    <div class="mb-1"><span class="text-blue-300">A</span> - Bin A</div>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <button id="randomBtn" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg transition duration-200 font-semibold">
+                    <i class="fas fa-random mr-2"></i>Generate
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const aisles = ['A'];
+        const positions = Array.from({length: 12}, (_, i) => i + 1);
+        const racks = Array.from({length: 14}, (_, i) => (i + 1).toString().padStart(2, '0'));
+        const shelves = Array.from({length: 9}, (_, i) => (i + 1).toString().padStart(2, '0'));
+        const bins = ['A', 'B', 'C', 'D'];
+        
+        let allCodes = [];
+        aisles.forEach(aisle => {
+            positions.forEach(position => {
+                racks.forEach(rack => {
+                    shelves.forEach(shelf => {
+                        bins.forEach(bin => {
+                            allCodes.push(`LO-${aisle}${position}-${rack}-${shelf}-${bin}`);
+                        });
+                    });
+                });
+            });
+        });
+        
+        let currentIndex = 0;
+        const currentCodeElement = document.getElementById('currentCode');
+        const codeBreakdownElement = document.getElementById('codeBreakdown');
+        
+        function updateCode(index) {
+            const code = allCodes[index];
+            currentCodeElement.textContent = code;
+            
+            const parts = code.split('-');
+            const aislePos = parts[1];
+            const aisle = aislePos[0];
+            const position = aislePos.substring(1);
+            const rack = parts[2];
+            const shelf = parts[3];
+            const bin = parts[4];
+            
+            codeBreakdownElement.innerHTML = `
+                <div class="mb-1"><span class="text-blue-300">${aislePos}</span> - ${aisle} ${position}</div>
+                <div class="mb-1"><span class="text-blue-300">${rack}</span> - Rack ${parseInt(rack)}</div>
+                <div class="mb-1"><span class="text-blue-300">${shelf}</span> - Shelf ${parseInt(shelf)}</div>
+                <div class="mb-1"><span class="text-blue-300">${bin}</span> - Bin ${bin}</div>
+            `;
+        }
+        
+        document.getElementById('randomBtn').addEventListener('click', () => {
+            currentIndex = Math.floor(Math.random() * allCodes.length);
+            updateCode(currentIndex);
+        });
+        
+        updateCode(currentIndex);
+    </script>
+</body>
+</html>
